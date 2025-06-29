@@ -1,24 +1,29 @@
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
-from app.auth import router as auth_router
+from fastapi import FastAPI, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from app.router import auth as auth_router
 from app.auth.utils.security import decode_access_token
-from app.db import SessionLocal
-from app.db.models.user import User
+from app import models
+from app.router.auth import get_db, oauth2_scheme
 
 app = FastAPI()
-app.include_router(auth_router)
+app.include_router(auth_router.router)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
-
-def get_current_user(token: str = Depends(oauth2_scheme), db=Depends(SessionLocal)):
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     user_id = decode_access_token(token)
     if user_id is None:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    user = db.query(User).filter(User.id == int(user_id)).first()
+        raise credentials_exception
+    
+    user = db.query(models.User).filter(models.User.id == int(user_id)).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        # Avoids leaking information that the user ID was valid but the user is deleted.
+        raise credentials_exception
     return user
 
 @app.get("/me")
-def read_me(current_user: User = Depends(get_current_user)):
+def read_me(current_user: models.User = Depends(get_current_user)):
     return {"email": current_user.email}

@@ -1,7 +1,7 @@
 # File: app/router/auth.py
 # Auth routerfor user regeistration and login
 from fastapi import APIRouter, Depends, HTTPException, status, Form
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, create_engine
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app import models, schemas
 from app.db import SessionLocal
@@ -17,7 +17,7 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/register")
+@router.post("/register", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
@@ -26,7 +26,7 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {"msg": "User created"}
+    return new_user
 
 @router.post("/login", response_model=schemas.Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
