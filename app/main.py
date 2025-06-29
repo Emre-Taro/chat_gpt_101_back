@@ -2,8 +2,12 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.router import auth as auth_router
 from app.auth.utils.security import decode_access_token
-from app import models
+from app.db import models
 from app.router.auth import get_db, oauth2_scheme
+from app.db import models
+from app.db.models.user import User
+
+
 
 app = FastAPI()
 app.include_router(auth_router.router)
