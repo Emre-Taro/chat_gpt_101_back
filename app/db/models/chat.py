@@ -4,15 +4,15 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
-from base import BaseModel  
+from app.db.base import BaseModel  
 
 
 class Chat(BaseModel):
     __tablename__ = 'chats'
     
-    chatId: uuid = Column(String, primary_key=True, index=True)
-    chatname: str = Column(String, nullable=False)
-    userId: uuid = Column(String, ForeignKey('users.userId'), nullable=False)
+    chatId = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    chatname = Column(String, nullable=False)
+    userId = Column(UUID(as_uuid=True), ForeignKey('users.userId'), nullable=False)
     created_at = Column(DateTime, nullable = False)
     updated_at = Column(DateTime, nullable = False)
 
