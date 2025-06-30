@@ -1,5 +1,6 @@
 # File: app/router/auth.py
 # Auth routerfor user regeistration and login
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, Form
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
