@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.router import auth as auth_router
-from app.router import chat as chat_router
+from app.router import chat_api as chat_router
 from app.auth.utils.security import decode_access_token
 from app.db import models
 from app.router.auth import get_db, oauth2_scheme
