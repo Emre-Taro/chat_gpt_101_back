@@ -14,7 +14,8 @@ class Message(BaseModel):
 
     messageId = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     chatId = Column(UUID(as_uuid=True), ForeignKey('chats.chatId'), index=True)
-    userId = Column(UUID(as_uuid=True), ForeignKey('users.userId'), nullable=False)
+    userId = Column(UUID(as_uuid=True), ForeignKey('users.userId'), nullable=True)
+    role = Column(String, nullable=False) # e.g., 'user', 'assistant'
     content = Column(String, nullable=False)
     chatname = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)

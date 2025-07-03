@@ -7,9 +7,21 @@ class MessageSchema(BaseModel):
     chatId: UUID
     userId: UUID
     content: str
+    role: str 
     chatname: str
     created_at: datetime
     updated_at: datetime
 
     class Config:
         from_attributes = True
+
+class MessageInputSchema(BaseModel):
+    chatId: UUID
+    userId: UUID
+    content: str
+    chatname: str
+    role: str
+
+    class Config:
+        from_attributes = True
+        orm_mode = True  # This allows the model to work with ORM objects directly
