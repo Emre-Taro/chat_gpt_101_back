@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.db import models
+from app.db.models import user
 from app.schemas.user_schema import UserCreate, User
 from app.auth.schemas import Token
 from app.db.session import SessionLocal
@@ -43,4 +44,19 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": str(user.userId)})
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    first_chat_id = None
+    if user.chats and len(user.chats) > 0:
+        first_chat_id = str(user.chats[0].chatId)
+
+    print(f"userId: {user.userId}, chats: {user.chats}")
+
+    if user.chats and len(user.chats) > 0:
+        print(f"first chatId: {user.chats[0].chatId}")
+
+    return {
+        "access_token": access_token,
+        "user_id": str(user.userId),
+        "chat_id": first_chat_id,
+        "token_type": "bearer"
+            }
