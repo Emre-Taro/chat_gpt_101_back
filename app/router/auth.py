@@ -45,7 +45,6 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": str(user.userId)})
 
-    first_chat_id = None
     if user.chats and len(user.chats) > 0:
         first_chat_id = str(user.chats[0].chatId)
 
