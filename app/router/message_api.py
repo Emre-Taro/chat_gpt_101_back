@@ -19,7 +19,7 @@ from app.router.chat_api import user_exists
 
 router = APIRouter()
 
-@router.get("/{user_id}/chat/{chat_id}/{message}", response_model=List[MessageSchema], status_code=status.HTTP_200_OK)
+@router.get("/{user_id}/chat/{chat_id}/message", response_model=List[MessageSchema], status_code=status.HTTP_200_OK)
 async def read_message(chat_id: uuid.UUID, user: User = Depends(user_exists), db: Session = Depends(get_db)):
     # take all the messages in the chat with the given chat_id and user_id
     messages = db.query(models.Message).filter(
@@ -29,7 +29,7 @@ async def read_message(chat_id: uuid.UUID, user: User = Depends(user_exists), db
         raise HTTPException(status_code=404, detail="Messages not found")
     return [MessageSchema.model_validate(message) for message in messages]
 
-@router.post("/{user_id}/chat/{chat_id}/{message}", status_code=status.HTTP_201_CREATED)
+@router.post("/{user_id}/chat/{chat_id}/message", status_code=status.HTTP_201_CREATED)
 async def insert_message(
     chat_id: uuid.UUID, 
     input: MessageInputSchema,

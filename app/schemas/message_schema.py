@@ -5,7 +5,7 @@ from datetime import datetime
 class MessageSchema(BaseModel):
     messageId: UUID
     chatId: UUID
-    userId: UUID
+    userId: UUID | None
     content: str
     role: str 
     chatname: str
@@ -19,7 +19,7 @@ class MessageInputSchema(BaseModel):
     chatId: UUID
     userId: UUID
     content: str
-    chatname: str
+    chatname: str | None
     role: str
 
     class Config:
