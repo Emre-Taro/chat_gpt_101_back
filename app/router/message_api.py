@@ -25,8 +25,7 @@ async def read_message(chat_id: uuid.UUID, user: User = Depends(user_exists), db
     messages = db.query(models.Message).filter(
         models.Message.chatId == chat_id,
     ).order_by(models.Message.created_at.asc()).all()
-    if not messages:
-        raise HTTPException(status_code=404, detail="Messages not found")
+    
     return [MessageSchema.model_validate(message) for message in messages]
 
 @router.post("/{user_id}/chat/{chat_id}/message", status_code=status.HTTP_201_CREATED)
