@@ -12,6 +12,7 @@ from app.db.models.user import User
 from app.auth.utils.security import get_password_hash, verify_password, create_access_token
 from app.db.session import get_db
 from app.openAPI.openai import generate_openai_response
+from app.openAPI.title_generator import generate_title_from_message
 from datetime import datetime
 from typing import List
 
@@ -30,18 +31,27 @@ async def read_message(chat_id: uuid.UUID, user: User = Depends(user_exists), db
 
 @router.post("/{user_id}/chat/{chat_id}/message", status_code=status.HTTP_201_CREATED)
 async def insert_message(
+    user_id: uuid.UUID,
     chat_id: uuid.UUID, 
     input: MessageInputSchema,
     user: User = Depends(user_exists), 
     db: Session = Depends(get_db)
         ):
+    
+    existing_messages = db.query(models.Message).filter_by(chatId=chat_id).count()
+    if existing_messages == 0:
+        generated_title: str | None = generate_title_from_message(input.content)
+    else:
+        generated_title = input.chatname or "Default Chat"
+
+
     # message of the user in the chat
     user_msg = models.Message(
         messageId = uuid.uuid4(),
         chatId = chat_id,
         userId = user.userId,
         content = input.content,
-        chatname = input.chatname,
+        chatname = generated_title,
         role = "user",
         created_at = datetime.utcnow()
     )
@@ -68,11 +78,16 @@ async def insert_message(
         userId=None,
         role="assistant",
         content=content_str,
-        chatname=input.chatname or "Default Chat",
+        chatname=generated_title,
         created_at=datetime.utcnow()
     )
     db.add(ai_msg)
     db.commit()
     db.refresh(ai_msg)
 
-    return {"user": user_msg, "assistant": ai_msg}
+    return {
+        "user": user_msg, 
+        "assistant": ai_msg, 
+        "generated_title": generated_title, 
+        "chatId": str(chat_id)
+    }
