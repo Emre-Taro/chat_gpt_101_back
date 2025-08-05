@@ -22,7 +22,7 @@ def user_exists(user_id: uuid.UUID, db: Session = Depends(get_db)):
 # get all the chats data from the db
 @router.get("/{user_id}/chats", response_model=chat_schema.ChatResponse, status_code=status.HTTP_200_OK)
 async def get_chats(user: User = Depends(user_exists), db: Session = Depends(get_db)):
-    chats = db.query(models.Chat).filter(models.Chat.userId == user.userId).all()
+    chats = db.query(models.Chat).filter(models.Chat.userId == user.userId).order_by(models.Chat.created_at.asc()).all()
     return {"chats": chats}
 
 
@@ -31,14 +31,13 @@ async def get_chats(user: User = Depends(user_exists), db: Session = Depends(get
 async def create_chat(user: User = Depends(user_exists), db: Session = Depends(get_db)):
     new_chat = models.Chat(
         chatId=uuid.uuid4(),
-        chatname="New Chat",
+        title = "New Chat",
         userId=user.userId,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
     db.add(new_chat)
-    db.commit(
-    )
+    db.commit()
     db.refresh(new_chat)
     return new_chat
 

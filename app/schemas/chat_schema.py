@@ -5,8 +5,8 @@ from datetime import datetime
 
 class UserResponse(BaseModel):
     chatId: uuid.UUID
-    chatname: str
     userId: uuid.UUID
+    title: str | None = None
     created_at: datetime
     updated_at: datetime
 

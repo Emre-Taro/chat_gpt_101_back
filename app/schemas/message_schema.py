@@ -8,7 +8,7 @@ class MessageSchema(BaseModel):
     userId: UUID | None
     content: str
     role: str 
-    chatname: str | None = None
+    title: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -19,7 +19,7 @@ class MessageInputSchema(BaseModel):
     chatId: UUID
     userId: UUID
     content: str
-    chatname: str | None = None
+    title: str | None = None
     role: str
 
     class Config:

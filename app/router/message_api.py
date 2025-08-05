@@ -41,8 +41,12 @@ async def insert_message(
     existing_messages = db.query(models.Message).filter_by(chatId=chat_id).count()
     if existing_messages == 0:
         generated_title: str | None = generate_title_from_message(input.content)
+        chat = db.query(models.Chat).filter_by(chatId=chat_id).first()
+        if chat:
+            chat.title = generated_title
+            db.commit()
     else:
-        generated_title = input.chatname or "Default Chat"
+        generated_title = input.title
 
 
     # message of the user in the chat
@@ -51,7 +55,7 @@ async def insert_message(
         chatId = chat_id,
         userId = user.userId,
         content = input.content,
-        chatname = generated_title,
+        title = generated_title,
         role = "user",
         created_at = datetime.utcnow()
     )
@@ -78,7 +82,7 @@ async def insert_message(
         userId=None,
         role="assistant",
         content=content_str,
-        chatname=generated_title,
+        title=generated_title,
         created_at=datetime.utcnow()
     )
     db.add(ai_msg)
