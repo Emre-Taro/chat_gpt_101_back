@@ -11,6 +11,7 @@ class MessageSchema(BaseModel):
     title: str | None = None
     created_at: datetime
     updated_at: datetime
+    imageFilename: str | None = None
 
     class Config:
         from_attributes = True
@@ -21,6 +22,7 @@ class MessageInputSchema(BaseModel):
     content: str
     title: str | None = None
     role: str
+    imageFilename: str | None = None
 
     class Config:
         from_attributes = True

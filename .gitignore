@@ -30,3 +30,6 @@ coverage.xml
 *.sqlite3
 static/uploads/*        # アップロードされたファイル（必要に応じて）
 !static/uploads/.gitkeep  # 空ディレクトリを保持したい場合
+
+# Ignore all files in static/uploads
+static/uploads/*
