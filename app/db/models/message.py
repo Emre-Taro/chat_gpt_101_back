@@ -6,6 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
 from app.db.base import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class Message(BaseModel):
