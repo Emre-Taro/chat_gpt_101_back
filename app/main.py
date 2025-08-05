@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from app.router import auth as auth_router
 from app.router import chat_api as chat_router
 from app.router import message_api as message_router
@@ -13,6 +14,15 @@ from app.db.models.user import User
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # フロントのURLに合わせる
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(auth_router.router)
 app.include_router(chat_router.router)
 app.include_router(message_router.router)
