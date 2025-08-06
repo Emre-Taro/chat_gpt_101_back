@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from app.router import auth as auth_router
 from app.router import chat_api as chat_router
 from app.router import message_api as message_router
 from app.router import openai_api as openai_router
+from app.router import image_upload_api as image_upload_router
 from app.auth.utils.security import decode_access_token
 from app.db import models
 from app.router.auth import get_db, oauth2_scheme
@@ -23,10 +25,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.include_router(auth_router.router)
 app.include_router(chat_router.router)
 app.include_router(message_router.router)
 app.include_router(openai_router.router)
+app.include_router(image_upload_router.router)
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):

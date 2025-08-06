@@ -18,6 +18,7 @@ class Message(BaseModel):
     role = Column(String, nullable=False) # e.g., 'user', 'assistant'
     content = Column(String, nullable=False)
     title = Column(String, nullable=True) 
+    imageFilename = Column(String, nullable=True)  # Add field for image filename
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 

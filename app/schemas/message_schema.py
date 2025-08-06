@@ -9,6 +9,7 @@ class MessageSchema(BaseModel):
     content: str
     role: str 
     title: str | None = None
+    imageFilename: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -20,6 +21,7 @@ class MessageInputSchema(BaseModel):
     userId: UUID
     content: str
     title: str | None = None
+    imageFilename: str | None = None
     role: str
 
     class Config:

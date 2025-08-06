@@ -1,4 +1,4 @@
-# File: app/router/message_api.py
+# File: app/router/openai_api.py
 from unittest import result
 import uuid
 import json
@@ -15,7 +15,5 @@ from app.openAPI.openai import generate_openai_response
 from app.openAPI.title_generator import generate_title_from_message
 from datetime import datetime
 from typing import List
-
-from app.router.chat_api import user_exists
 
 router = APIRouter()
